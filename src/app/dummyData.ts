@@ -1,4 +1,4 @@
-const user = {
+export const user = {
   name: "username",
   songs: [
     {
