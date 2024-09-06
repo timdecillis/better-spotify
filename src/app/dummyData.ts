@@ -13,5 +13,13 @@ export const user = {
       artist: "thundercat",
       title: "drank",
     },
+    {
+      artist: "the roots",
+      title: "what they do",
+    },
+    {
+      artist: "de la soul",
+      title: "my brother is a basehead",
+    },
   ],
 };
