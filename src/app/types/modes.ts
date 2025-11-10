@@ -1,6 +1,10 @@
 export type Song = {
-  song: string;
-  artist: string;
+  name: string;
+  mbid: string;
+  artist: {
+    name: string;
+    mbid: string;
+  };
 };
 
 export type Name =
@@ -13,5 +17,9 @@ export type Mode = {
   name: Name;
   description: string;
   range: boolean;
-  handler: (artist: string, song: string) => Promise<Song[]>;
+  handler: (
+    artist: string,
+    song: string,
+    temperature: number
+  ) => Promise<Song[]>;
 };

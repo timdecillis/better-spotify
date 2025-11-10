@@ -5,7 +5,7 @@ import {
   thermalAscent,
   thermalDrift,
   twinGravity,
-} from "./mode-handlers";
+} from "../lib/mode-handlers";
 
 export const playlistLength = 10;
 

@@ -12,14 +12,22 @@ export default function Home() {
   const [mode, setMode] = useState<Mode>(modes[0]);
   const [playlist, setPlaylist] = useState<Song[]>([]);
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setMessage("");
     setPlaylist([]);
     const handler = mode.handler;
-    const playlist = await handler(artist, song);
+    setLoading(true);
+    const playlist = await handler(artist, song, temperature);
+    if (playlist?.length === 0 || !playlist) {
+      setLoading(false);
+      setMessage("No similar tracks found");
+      return;
+    }
     setPlaylist(playlist);
+    setLoading(false);
   };
 
   return (
@@ -107,11 +115,14 @@ export default function Home() {
         <div>
           {playlist.map((track, i) => (
             <div className="text-lg text-pink-100" key={i}>
-              <span className="font-bold">{track.song}</span> by{" "}
-              <span className="font-bold">{track.artist}</span>
+              <span className="font-bold">{track.name}</span> by{" "}
+              <span className="font-bold">{track.artist.name}</span>
             </div>
           ))}
         </div>
+      )}
+      {loading && (
+        <div className="text-lg text-pink-200">Assembling your planets...</div>
       )}
     </div>
   );
