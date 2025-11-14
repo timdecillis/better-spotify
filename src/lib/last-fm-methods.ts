@@ -16,6 +16,7 @@ export const getTrackInfo = async (artist: string, track: string) => {
 
 export const getSimilarArtists = async (artist: string) => {
   const response = await fetch(ENDPOINTS.ARTIST.GET_SIMILAR(artist));
+  console.log("response :>> ", response);
   if (!response.ok) {
     console.log("error getting similar artists");
     return null;

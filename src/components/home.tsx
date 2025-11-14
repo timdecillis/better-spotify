@@ -114,9 +114,12 @@ export default function Home() {
       {playlist.length > 0 && (
         <div>
           {playlist.map((track, i) => (
-            <div className="text-lg text-pink-100" key={i}>
-              <span className="font-bold">{track.name}</span> by{" "}
-              <span className="font-bold">{track.artist.name}</span>
+            <div className="text-lg text-gray-100" key={i}>
+              <span className="font-extrabold text-cyan-200">{track.name}</span>{" "}
+              by{" "}
+              <span className="font-semibold text-pink-200">
+                {track.artist.name}
+              </span>
             </div>
           ))}
         </div>

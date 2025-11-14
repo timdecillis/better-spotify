@@ -7,3 +7,23 @@ export function shuffle(array: Song[]) {
   }
   return array;
 }
+
+export function getStaticOrbitStepSize(
+  temperature: number,
+  poolSize: number,
+  playlistLength: number
+): number {
+  const t = Math.min(Math.max(temperature, 0), 1);
+  const maxStep = Math.max(1, Math.floor(poolSize / playlistLength));
+  const step = 1 + t * (maxStep - 1);
+
+  return Math.max(1, Math.round(step));
+}
+
+export function getDriftingOrbitStepSize(
+  temperature: number,
+  poolSize: number
+): number {
+  const t = Math.min(Math.max(temperature, 0), 1);
+  return Math.max(1, Math.round(poolSize * t));
+}
