@@ -58,3 +58,13 @@ export const getSimilarTracks = async (artist: string, song: string) => {
   }
   return similarTracksData.similartracks.track;
 };
+
+export const search = async (artist: string, song: string) => {
+  const response = await fetch(ENDPOINTS.TRACK.SEARCH(song, artist));
+  if (!response.ok) {
+    console.log("error searching for track");
+    return null;
+  }
+  const data = await response.json();
+  return data;
+};

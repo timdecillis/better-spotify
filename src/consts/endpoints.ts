@@ -3,6 +3,12 @@ const BASE_LAST_FM_URL = "https://ws.audioscrobbler.com/2.0";
 export const ENDPOINTS = {
   OPENAI: "https://api.openai.com/v1/responses",
   TRACK: {
+    SEARCH: (song: string, artist?: string) =>
+      `${BASE_LAST_FM_URL}/?method=track.search&track=${encodeURIComponent(
+        song
+      )}${artist ? `&artist=${encodeURIComponent(artist)}` : ""}&api_key=${
+        process.env.NEXT_PUBLIC_LAST_FM_API_KEY
+      }&format=json`,
     GET_SIMILAR: (artist: string, song: string) =>
       `${BASE_LAST_FM_URL}/?method=track.getsimilar&artist=${encodeURIComponent(
         artist
