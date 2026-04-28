@@ -25,5 +25,5 @@ export function getDriftingOrbitStepSize(
   poolSize: number
 ): number {
   const t = Math.min(Math.max(temperature, 0), 1);
-  return Math.max(1, Math.round(poolSize * t));
+  return Math.min(Math.max(1, Math.round(poolSize * t)), poolSize - 1);
 }

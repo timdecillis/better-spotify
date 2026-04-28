@@ -7,14 +7,20 @@ import {
 } from "../last-fm-methods";
 import { getDriftingOrbitStepSize } from "@/utils/utils";
 
+const isDuplicate = (song: Song, list: Song[]): boolean =>
+  list.some(
+    (s) => s.name === song.name && s.artist.name === song.artist.name
+  );
+
 export const driftingOrbit = async (
   artistName: string,
   songName: string,
   temperature: number
-) => {
+): Promise<Song[]> => {
   const trackInfo = await getTrackInfo(artistName, songName);
   if (!trackInfo) {
     console.log("no track info found", artistName, songName);
+    return [];
   }
 
   const playlist: Song[] = [trackInfo];
@@ -24,16 +30,14 @@ export const driftingOrbit = async (
     try {
       const seedArtist = playlist[playlist.length - 1].artist.name;
 
-      // Get new similar artists for the new seed each time
       let similarArtists = await getSimilarArtists(seedArtist);
       if (!similarArtists?.length) {
         console.log("No similar artists found for", seedArtist);
         return playlist;
       }
 
-      // Remove artists we've already tried
       similarArtists = similarArtists.filter(
-        (a) => !usedArtistNames.has(a.name)
+        (a: { name: string }) => !usedArtistNames.has(a.name)
       );
 
       if (!similarArtists.length) {
@@ -46,31 +50,17 @@ export const driftingOrbit = async (
         similarArtists.length
       );
 
-      let selectedArtist: { name: string } | null = null;
-
-      // Search forward from stepSize → end
-      for (let i = stepSize; i < similarArtists.length; i++) {
-        selectedArtist = similarArtists[i];
-        break;
-      }
-
-      // If not found (rare), search backward
-      if (!selectedArtist) {
-        for (let i = stepSize - 1; i >= 0; i--) {
-          selectedArtist = similarArtists[i];
-          break;
-        }
-      }
+      // Clamp index to valid range
+      const index = Math.min(stepSize, similarArtists.length - 1);
+      const selectedArtist = similarArtists[index];
 
       if (!selectedArtist) {
         console.log("Could not select an artist");
         break;
       }
 
-      // Mark artist as used
       usedArtistNames.add(selectedArtist.name);
 
-      // Fetch top tracks for this new artist
       const artistTopTracks = await getArtistTopTracks(selectedArtist.name);
 
       if (!artistTopTracks?.length) {
@@ -78,9 +68,8 @@ export const driftingOrbit = async (
         continue;
       }
 
-      // Choose a track not already in playlist
       const nextTrack = artistTopTracks.find(
-        (t) => !playlist.some((song) => song.mbid === t.mbid)
+        (t: Song) => !isDuplicate(t, playlist)
       );
 
       if (!nextTrack) {
